@@ -7,6 +7,7 @@ struct DayView: View {
 
     @Environment(\.dayViewStyle) private var style
     @Environment(\.selectedDay) private var selectedDay
+    @Environment(\.dayEventCounts) private var dayEventCounts
 
     private var dateComponents: DateComponents {
         DateComponents(year: year, month: month, day: day)
@@ -24,6 +25,10 @@ struct DayView: View {
         return isToday
     }
 
+    private var eventCount: Int {
+        dayEventCounts[dateComponents] ?? 0
+    }
+
     var body: some View {
         let configuration = DayViewStyleConfiguration(
             label: DayViewStyleConfiguration.Label(content: AnyView(Text("\(day)"))),
@@ -31,7 +36,8 @@ struct DayView: View {
             month: month,
             year: year,
             isToday: isToday,
-            isSelected: isSelected
+            isSelected: isSelected,
+            eventCount: eventCount
         )
         AnyView(style.makeBody(configuration: configuration))
             .contentShape(Rectangle())

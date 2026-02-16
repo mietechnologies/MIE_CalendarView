@@ -26,6 +26,9 @@ public struct DayViewStyleConfiguration {
 
     /// Whether this day is the currently selected day.
     public let isSelected: Bool
+
+    /// The number of events on this day.
+    public let eventCount: Int
 }
 
 /// A protocol that defines the appearance of day cells in a ``CalendarView``.
@@ -53,21 +56,34 @@ public struct DefaultDayViewStyle: DayViewStyle {
         let isSelected = configuration.isSelected
         let isToday = configuration.isToday
 
-        configuration.label
-            .font(isSelected || isToday ? .body.bold() : .body)
-            .foregroundStyle(
-                isSelected ? Color.white :
-                isToday ? Color.accentColor : .primary
-            )
-            .frame(maxWidth: .infinity, minHeight: 32)
-            .background {
-                if isSelected {
-                    Circle()
-                        .fill(Color.accentColor)
-                } else if isToday {
-                    Circle()
-                        .stroke(Color.accentColor, lineWidth: 1.5)
+        VStack(spacing: 1) {
+            configuration.label
+                .font(isSelected || isToday ? .body.bold() : .body)
+                .foregroundStyle(
+                    isSelected ? Color.white :
+                    isToday ? Color.accentColor : .primary
+                )
+                .frame(maxWidth: .infinity, minHeight: 32)
+                .background {
+                    if isSelected {
+                        Circle()
+                            .fill(Color.accentColor)
+                    } else if isToday {
+                        Circle()
+                            .stroke(Color.accentColor, lineWidth: 1.5)
+                    }
+                }
+
+            if configuration.eventCount > 0 {
+                HStack(spacing: 2) {
+                    let dotCount = min(configuration.eventCount, 3)
+                    ForEach(0..<dotCount, id: \.self) { _ in
+                        Circle()
+                            .fill(isSelected ? Color.accentColor : Color.secondary)
+                            .frame(width: 4, height: 4)
+                    }
                 }
             }
+        }
     }
 }

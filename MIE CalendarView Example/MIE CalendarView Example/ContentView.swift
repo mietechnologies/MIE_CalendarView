@@ -8,27 +8,71 @@
 import SwiftUI
 import MIECalendarView
 
+// MARK: - Sample Event
+
+struct SampleEvent: DayEventType {
+    let date: DateComponents
+}
+
+extension SampleEvent {
+    /// Creates sample events scattered around the current month for demonstration.
+    static func sampleEvents() -> [SampleEvent] {
+        let calendar = Calendar.current
+        let today = Date()
+        let components = calendar.dateComponents([.year, .month], from: today)
+        let year = components.year!
+        let month = components.month!
+
+        return [
+            SampleEvent(date: DateComponents(year: year, month: month, day: 3)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 3)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 7)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 15)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 15)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 15)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 22)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 22)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 22)),
+            SampleEvent(date: DateComponents(year: year, month: month, day: 22)),
+        ]
+    }
+}
+
 // MARK: - Custom Styles
 
 struct BorderedDayViewStyle: DayViewStyle {
     func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(configuration.isSelected || configuration.isToday ? .body.bold() : .body)
-            .foregroundStyle(configuration.isSelected ? Color.white : .primary)
-            .frame(maxWidth: .infinity, minHeight: 32)
-            .background {
-                if configuration.isSelected {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color.accentColor)
-                } else if configuration.isToday {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color.accentColor.opacity(0.2))
+        VStack(spacing: 2) {
+            configuration.label
+                .font(configuration.isSelected || configuration.isToday ? .body.bold() : .body)
+                .foregroundStyle(configuration.isSelected ? Color.white : .primary)
+
+            if configuration.eventCount > 0 {
+                HStack(spacing: 2) {
+                    let dotCount = min(configuration.eventCount, 3)
+                    ForEach(0..<dotCount, id: \.self) { _ in
+                        Circle()
+                            .fill(configuration.isSelected ? Color.white : Color.orange)
+                            .frame(width: 4, height: 4)
+                    }
                 }
             }
-            .overlay {
+        }
+        .frame(maxWidth: .infinity, minHeight: 36)
+        .aspectRatio(1, contentMode: .fit)
+        .background {
+            if configuration.isSelected {
                 RoundedRectangle(cornerRadius: 6)
-                    .stroke(Color.secondary.opacity(0.4), lineWidth: 1)
+                    .fill(Color.accentColor)
+            } else if configuration.isToday {
+                RoundedRectangle(cornerRadius: 6)
+                    .fill(Color.accentColor.opacity(0.2))
             }
+        }
+        .overlay {
+            RoundedRectangle(cornerRadius: 6)
+                .stroke(Color.secondary.opacity(0.4), lineWidth: 1)
+        }
     }
 }
 
@@ -47,6 +91,17 @@ struct MinimalDayViewStyle: DayViewStyle {
                 Rectangle()
                     .fill(Color.accentColor.opacity(0.4))
                     .frame(width: 16, height: 2)
+            }
+
+            if configuration.eventCount > 0 {
+                HStack(spacing: 2) {
+                    let dotCount = min(configuration.eventCount, 3)
+                    ForEach(0..<dotCount, id: \.self) { _ in
+                        Circle()
+                            .fill(Color.accentColor.opacity(0.6))
+                            .frame(width: 4, height: 4)
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity, minHeight: 32)
@@ -93,17 +148,19 @@ struct ContentView: View {
         }
     }
 
+    private let sampleEvents = SampleEvent.sampleEvents()
+
     @ViewBuilder
     private func styledCalendar() -> some View {
         switch selectedStyle {
         case .default:
-            CalendarView(selection: $selectedDate)
+            CalendarView(monthCount: 1, selection: $selectedDate, events: sampleEvents)
                 .dayViewStyle(DefaultDayViewStyle())
         case .bordered:
-            CalendarView(selection: $selectedDate)
+            CalendarView(selection: $selectedDate, events: sampleEvents)
                 .dayViewStyle(BorderedDayViewStyle())
         case .minimal:
-            CalendarView(selection: $selectedDate)
+            CalendarView(selection: $selectedDate, events: sampleEvents)
                 .dayViewStyle(MinimalDayViewStyle())
         }
     }

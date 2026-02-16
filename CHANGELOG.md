@@ -6,3 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+- `DayEventType` protocol for providing event data to the calendar
+- `eventCount` property on `DayViewStyleConfiguration` for custom styles to render event indicators
+- `events` parameter on `CalendarView` initializer (default `[]`)
+- Default dot indicators (up to 3) below day numbers when events are present
