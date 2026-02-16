@@ -7,13 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- `events` parameter on `CalendarView` now supports `Binding<[any DayEventType]>` for dynamic event updates
-- Existing value-based `events` initializer is preserved for backwards compatibility
-
 ### Added
+- `CalendarView` — horizontally paging calendar centered on the current month
+- Configurable `monthCount` parameter to control how many months are available (default `12`)
+- Day selection via `Binding<DateComponents?>` with today highlighted by default
+- `DayViewStyle` protocol and environment-based styling system for customizing day cells
+- `DayViewStyleConfiguration` providing `label`, `day`, `month`, `year`, `isToday`, `isSelected`, and `eventCount`
+- `DefaultDayViewStyle` with accent-colored circle for selected/today states
+- `.dayViewStyle(_:)` view modifier for applying custom day styles
 - `DayEventType` protocol for providing event data to the calendar
-- `eventCount` property on `DayViewStyleConfiguration` for custom styles to render event indicators
-- `events` parameter on `CalendarView` initializer (default `[]`)
+- `events` parameter accepting `[any DayEventType]` or `Binding<[any DayEventType]>` for static and dynamic event data
 - Default dot indicators (up to 3) below day numbers when events are present
-- `onMonthChange(_:)` view modifier that fires a callback with `(month, year)` when the visible month changes
+- `.onMonthChange(_:)` view modifier that fires a `(month, year)` callback when the visible month changes
+- Self-sizing layout — `CalendarView` constrains to its intrinsic content height
