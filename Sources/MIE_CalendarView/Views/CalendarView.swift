@@ -4,12 +4,42 @@ import SwiftUI
 public struct CalendarView: View {
     private let months: [MonthDescriptor]
     private let currentMonth: MonthDescriptor
-    private let eventCounts: [DateComponents: Int]
+    @Binding private var events: [any DayEventType]
     @Binding private var selection: DateComponents?
     @State private var visibleMonthID: Int?
     @Environment(\.onMonthChange) private var onMonthChange
 
-    /// Creates a calendar view.
+    private var eventCounts: [DateComponents: Int] {
+        var counts: [DateComponents: Int] = [:]
+        for event in events {
+            let key = DateComponents(year: event.date.year, month: event.date.month, day: event.date.day)
+            counts[key, default: 0] += 1
+        }
+        return counts
+    }
+
+    /// Creates a calendar view with a binding to an events array.
+    /// - Parameters:
+    ///   - monthCount: The total number of months to display, centered on the
+    ///     current month. Defaults to `12`.
+    ///   - selection: A binding to the currently selected day. Pass `nil` to
+    ///     let today appear selected by default.
+    ///   - events: A binding to an array of events conforming to
+    ///     ``DayEventType``. The calendar displays indicators on days that
+    ///     have events and updates automatically when the array changes.
+    public init(
+        monthCount: Int = 12,
+        selection: Binding<DateComponents?> = .constant(nil),
+        events: Binding<[any DayEventType]>
+    ) {
+        let current = CalendarDataSource.currentMonthDescriptor()
+        self.currentMonth = current
+        self.months = CalendarDataSource.monthRange(around: Date(), totalMonths: monthCount)
+        self._selection = selection
+        self._events = events
+    }
+
+    /// Creates a calendar view with a static events array.
     /// - Parameters:
     ///   - monthCount: The total number of months to display, centered on the
     ///     current month. Defaults to `12`.
@@ -22,17 +52,7 @@ public struct CalendarView: View {
         selection: Binding<DateComponents?> = .constant(nil),
         events: [any DayEventType] = []
     ) {
-        let current = CalendarDataSource.currentMonthDescriptor()
-        self.currentMonth = current
-        self.months = CalendarDataSource.monthRange(around: Date(), totalMonths: monthCount)
-        self._selection = selection
-
-        var counts: [DateComponents: Int] = [:]
-        for event in events {
-            let key = DateComponents(year: event.date.year, month: event.date.month, day: event.date.day)
-            counts[key, default: 0] += 1
-        }
-        self.eventCounts = counts
+        self.init(monthCount: monthCount, selection: selection, events: .constant(events))
     }
 
     public var body: some View {

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- `events` parameter on `CalendarView` now supports `Binding<[any DayEventType]>` for dynamic event updates
+- Existing value-based `events` initializer is preserved for backwards compatibility
+
 ### Added
 - `DayEventType` protocol for providing event data to the calendar
 - `eventCount` property on `DayViewStyleConfiguration` for custom styles to render event indicators

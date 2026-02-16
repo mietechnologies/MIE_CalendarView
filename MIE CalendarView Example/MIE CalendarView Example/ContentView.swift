@@ -15,14 +15,8 @@ struct SampleEvent: DayEventType {
 }
 
 extension SampleEvent {
-    /// Creates sample events scattered around the current month for demonstration.
-    static func sampleEvents() -> [SampleEvent] {
-        let calendar = Calendar.current
-        let today = Date()
-        let components = calendar.dateComponents([.year, .month], from: today)
-        let year = components.year!
-        let month = components.month!
-
+    /// Creates sample events for a given month and year.
+    static func sampleEvents(month: Int, year: Int) -> [SampleEvent] {
         return [
             SampleEvent(date: DateComponents(year: year, month: month, day: 3)),
             SampleEvent(date: DateComponents(year: year, month: month, day: 3)),
@@ -35,6 +29,14 @@ extension SampleEvent {
             SampleEvent(date: DateComponents(year: year, month: month, day: 22)),
             SampleEvent(date: DateComponents(year: year, month: month, day: 22)),
         ]
+    }
+
+    /// Creates sample events for the current month.
+    static func sampleEvents() -> [SampleEvent] {
+        let calendar = Calendar.current
+        let today = Date()
+        let components = calendar.dateComponents([.year, .month], from: today)
+        return sampleEvents(month: components.month!, year: components.year!)
     }
 }
 
@@ -138,6 +140,7 @@ struct ContentView: View {
             styledCalendar()
                 .onMonthChange { month, year in
                     visibleMonth = "\(month)/\(year)"
+                    sampleEvents = SampleEvent.sampleEvents(month: month, year: year)
                 }
 
             if !visibleMonth.isEmpty {
@@ -158,23 +161,20 @@ struct ContentView: View {
         }
     }
 
-    private let sampleEvents = SampleEvent.sampleEvents()
+    @State private var sampleEvents: [any DayEventType] = SampleEvent.sampleEvents()
 
     @ViewBuilder
     private func styledCalendar() -> some View {
         switch selectedStyle {
         case .default:
-            CalendarView(monthCount: 1, selection: $selectedDate, events: sampleEvents)
+            CalendarView(monthCount: 1, selection: $selectedDate, events: $sampleEvents)
                 .dayViewStyle(DefaultDayViewStyle())
         case .bordered:
-            CalendarView(selection: $selectedDate, events: sampleEvents)
+            CalendarView(selection: $selectedDate, events: $sampleEvents)
                 .dayViewStyle(BorderedDayViewStyle())
         case .minimal:
-            CalendarView(selection: $selectedDate, events: sampleEvents)
+            CalendarView(selection: $selectedDate, events: $sampleEvents)
                 .dayViewStyle(MinimalDayViewStyle())
-                .onMonthChange { visibleMonth, year in
-                    print(visibleMonth, year)
-                }
         }
     }
 }
