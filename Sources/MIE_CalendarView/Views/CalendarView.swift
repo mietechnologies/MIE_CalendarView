@@ -25,4 +25,9 @@ public struct CalendarView: View {
         .defaultScrollAnchor(.center)
         .scrollPosition(id: .constant(currentMonth.id), anchor: .center)
     }
+
+    /// Convenience modifier to set the ``DayViewStyle`` for this calendar.
+    public func dayStyle<S: DayViewStyle>(_ style: S) -> some View {
+        self.dayViewStyle(style)
+    }
 }

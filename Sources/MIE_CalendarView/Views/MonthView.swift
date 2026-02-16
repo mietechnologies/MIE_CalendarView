@@ -42,8 +42,7 @@ struct MonthView: View {
                 }
 
                 ForEach(1...daysInMonth, id: \.self) { day in
-                    Text("\(day)")
-                        .frame(maxWidth: .infinity, minHeight: 32)
+                    DayView(day: day, month: descriptor.month, year: descriptor.year)
                 }
 
                 let trailingSpaces = (7 - (firstWeekdayOffset + daysInMonth) % 7) % 7
