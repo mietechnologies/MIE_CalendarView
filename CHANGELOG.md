@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026.02.15
+
 ### Changed
 - **Breaking:** Replaced `monthCount` parameter with `monthsBefore` and `monthsAfter` for explicit control over the calendar range. The current month is always included. Defaults are `monthsBefore: 0, monthsAfter: 11` (12 months total).
 
