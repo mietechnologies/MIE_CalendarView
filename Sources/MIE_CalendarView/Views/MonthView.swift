@@ -45,7 +45,8 @@ struct MonthView: View {
                     DayView(day: day, month: descriptor.month, year: descriptor.year)
                 }
 
-                let trailingSpaces = (7 - (firstWeekdayOffset + daysInMonth) % 7) % 7
+                let totalCells = 42 // 6 rows of 7 days
+                let trailingSpaces = totalCells - firstWeekdayOffset - daysInMonth
                 ForEach(0..<trailingSpaces, id: \.self) { _ in
                     Text("")
                 }

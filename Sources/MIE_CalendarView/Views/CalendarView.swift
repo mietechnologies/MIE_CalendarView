@@ -56,7 +56,7 @@ public struct CalendarView: View {
     }
 
     public var body: some View {
-        ScrollView(.horizontal) {
+        ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(spacing: 0) {
                 ForEach(months) { month in
                     MonthView(descriptor: month)

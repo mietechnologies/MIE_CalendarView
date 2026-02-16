@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Consistent month grid height — all months now render a full 6-row grid, preventing layout jumps when swiping between months with different week counts
+
 ## [1.0.0] - 2026.02.15
 
 ### Added
