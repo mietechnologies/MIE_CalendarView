@@ -6,18 +6,17 @@ public struct CalendarView: View {
     private let currentMonth: MonthDescriptor
     @Binding private var selection: DateComponents?
 
-    /// Creates a calendar view with an external selection binding.
-    public init(selection: Binding<DateComponents?>) {
+    /// Creates a calendar view.
+    /// - Parameters:
+    ///   - monthCount: The total number of months to display, centered on the
+    ///     current month. Defaults to `12`.
+    ///   - selection: A binding to the currently selected day. Pass `nil` to
+    ///     let today appear selected by default.
+    public init(monthCount: Int = 12, selection: Binding<DateComponents?> = .constant(nil)) {
         let current = CalendarDataSource.currentMonthDescriptor()
         self.currentMonth = current
-        self.months = CalendarDataSource.monthRange(around: Date())
+        self.months = CalendarDataSource.monthRange(around: Date(), totalMonths: monthCount)
         self._selection = selection
-    }
-
-    /// Creates a calendar view with internal selection state.
-    /// Today appears selected by default when no day has been tapped.
-    public init() {
-        self.init(selection: .constant(nil))
     }
 
     public var body: some View {

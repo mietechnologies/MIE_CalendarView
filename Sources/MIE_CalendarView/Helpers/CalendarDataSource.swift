@@ -47,6 +47,24 @@ enum CalendarDataSource {
         return weekday - 1
     }
 
+    static func monthRange(around date: Date, totalMonths: Int, calendar: Calendar = .current) -> [MonthDescriptor] {
+        let components = calendar.dateComponents([.year, .month], from: date)
+        guard let centerYear = components.year, let centerMonth = components.month else { return [] }
+
+        let monthsBefore = (totalMonths - 1) / 2
+        var months: [MonthDescriptor] = []
+
+        for offset in -monthsBefore ..< (-monthsBefore + totalMonths) {
+            var m = centerMonth + offset
+            var y = centerYear
+            while m < 1 { m += 12; y -= 1 }
+            while m > 12 { m -= 12; y += 1 }
+            months.append(MonthDescriptor(year: y, month: m))
+        }
+
+        return months
+    }
+
     static func currentMonthDescriptor(calendar: Calendar = .current) -> MonthDescriptor {
         let now = Date()
         let components = calendar.dateComponents([.year, .month], from: now)
