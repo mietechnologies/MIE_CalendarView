@@ -136,12 +136,16 @@ struct ContentView: View {
             }
             .pickerStyle(.segmented)
             .padding(.horizontal)
+            
+            Spacer()
 
             styledCalendar()
                 .onMonthChange { month, year in
                     visibleMonth = "\(month)/\(year)"
                     sampleEvents = SampleEvent.sampleEvents(month: month, year: year)
                 }
+            
+            Spacer()
 
             if !visibleMonth.isEmpty {
                 Text("Viewing: \(visibleMonth)")

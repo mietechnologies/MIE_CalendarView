@@ -68,6 +68,7 @@ public struct CalendarView: View {
         .scrollTargetBehavior(.paging)
         .defaultScrollAnchor(.center)
         .scrollPosition(id: $visibleMonthID, anchor: .center)
+        .fixedSize(horizontal: false, vertical: true)
         .onAppear {
             visibleMonthID = currentMonth.id
         }
