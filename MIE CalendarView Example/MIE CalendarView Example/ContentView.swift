@@ -13,11 +13,14 @@ import MIECalendarView
 struct BorderedDayViewStyle: DayViewStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(configuration.isToday ? .body.bold() : .body)
-            .foregroundStyle(.primary)
+            .font(configuration.isSelected || configuration.isToday ? .body.bold() : .body)
+            .foregroundStyle(configuration.isSelected ? Color.white : .primary)
             .frame(maxWidth: .infinity, minHeight: 32)
             .background {
-                if configuration.isToday {
+                if configuration.isSelected {
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.accentColor)
+                } else if configuration.isToday {
                     RoundedRectangle(cornerRadius: 6)
                         .fill(Color.accentColor.opacity(0.2))
                 }
@@ -33,12 +36,16 @@ struct MinimalDayViewStyle: DayViewStyle {
     func makeBody(configuration: Configuration) -> some View {
         VStack(spacing: 2) {
             configuration.label
-                .font(.body)
-                .foregroundStyle(.primary)
+                .font(configuration.isSelected ? .body.bold() : .body)
+                .foregroundStyle(configuration.isSelected ? Color.accentColor : .primary)
 
-            if configuration.isToday {
+            if configuration.isSelected {
                 Rectangle()
                     .fill(Color.accentColor)
+                    .frame(width: 16, height: 2)
+            } else if configuration.isToday {
+                Rectangle()
+                    .fill(Color.accentColor.opacity(0.4))
                     .frame(width: 16, height: 2)
             }
         }
@@ -60,6 +67,7 @@ enum StyleOption: String, CaseIterable, Identifiable {
 
 struct ContentView: View {
     @State private var selectedStyle: StyleOption = .default
+    @State private var selectedDate: DateComponents?
 
     var body: some View {
         VStack {
@@ -72,6 +80,16 @@ struct ContentView: View {
             .padding(.horizontal)
 
             styledCalendar()
+
+            if let selected = selectedDate {
+                Text("Selected: \(selected.month!)/\(selected.day!)/\(selected.year!)")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            } else {
+                Text("No selection (today is highlighted)")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
     }
 
@@ -79,13 +97,13 @@ struct ContentView: View {
     private func styledCalendar() -> some View {
         switch selectedStyle {
         case .default:
-            CalendarView()
+            CalendarView(selection: $selectedDate)
                 .dayViewStyle(DefaultDayViewStyle())
         case .bordered:
-            CalendarView()
+            CalendarView(selection: $selectedDate)
                 .dayViewStyle(BorderedDayViewStyle())
         case .minimal:
-            CalendarView()
+            CalendarView(selection: $selectedDate)
                 .dayViewStyle(MinimalDayViewStyle())
         }
     }

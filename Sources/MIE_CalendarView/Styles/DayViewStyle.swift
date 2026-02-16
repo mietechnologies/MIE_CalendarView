@@ -23,6 +23,9 @@ public struct DayViewStyleConfiguration {
 
     /// Whether this day is today's date.
     public let isToday: Bool
+
+    /// Whether this day is the currently selected day.
+    public let isSelected: Bool
 }
 
 /// A protocol that defines the appearance of day cells in a ``CalendarView``.
@@ -47,14 +50,23 @@ public struct DefaultDayViewStyle: DayViewStyle {
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
+        let isSelected = configuration.isSelected
+        let isToday = configuration.isToday
+
         configuration.label
-            .font(configuration.isToday ? .body.bold() : .body)
-            .foregroundStyle(configuration.isToday ? Color.white : .primary)
+            .font(isSelected || isToday ? .body.bold() : .body)
+            .foregroundStyle(
+                isSelected ? Color.white :
+                isToday ? Color.accentColor : .primary
+            )
             .frame(maxWidth: .infinity, minHeight: 32)
             .background {
-                if configuration.isToday {
+                if isSelected {
                     Circle()
                         .fill(Color.accentColor)
+                } else if isToday {
+                    Circle()
+                        .stroke(Color.accentColor, lineWidth: 1.5)
                 }
             }
     }
