@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-@testable import MIE_CalendarView
+@testable import MIECalendarView
 
 @Test func daysInMonthForFebruary2026() {
     let days = CalendarDataSource.daysInMonth(year: 2026, month: 2)
