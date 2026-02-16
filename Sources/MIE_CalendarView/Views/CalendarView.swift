@@ -49,9 +49,4 @@ public struct CalendarView: View {
         .environment(\.selectedDay, $selection)
         .environment(\.dayEventCounts, eventCounts)
     }
-
-    /// Convenience modifier to set the ``DayViewStyle`` for this calendar.
-    public func dayStyle<S: DayViewStyle>(_ style: S) -> some View {
-        self.dayViewStyle(style)
-    }
 }
