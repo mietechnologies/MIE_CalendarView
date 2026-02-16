@@ -6,6 +6,8 @@ public struct CalendarView: View {
     private let currentMonth: MonthDescriptor
     private let eventCounts: [DateComponents: Int]
     @Binding private var selection: DateComponents?
+    @State private var visibleMonthID: Int?
+    @Environment(\.onMonthChange) private var onMonthChange
 
     /// Creates a calendar view.
     /// - Parameters:
@@ -45,7 +47,15 @@ public struct CalendarView: View {
         }
         .scrollTargetBehavior(.paging)
         .defaultScrollAnchor(.center)
-        .scrollPosition(id: .constant(currentMonth.id), anchor: .center)
+        .scrollPosition(id: $visibleMonthID, anchor: .center)
+        .onAppear {
+            visibleMonthID = currentMonth.id
+        }
+        .onChange(of: visibleMonthID) { _, newValue in
+            guard let newValue,
+                  let descriptor = months.first(where: { $0.id == newValue }) else { return }
+            onMonthChange?(month: descriptor.month, year: descriptor.year)
+        }
         .environment(\.selectedDay, $selection)
         .environment(\.dayEventCounts, eventCounts)
     }

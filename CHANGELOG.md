@@ -12,3 +12,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `eventCount` property on `DayViewStyleConfiguration` for custom styles to render event indicators
 - `events` parameter on `CalendarView` initializer (default `[]`)
 - Default dot indicators (up to 3) below day numbers when events are present
+- `onMonthChange(_:)` view modifier that fires a callback with `(month, year)` when the visible month changes

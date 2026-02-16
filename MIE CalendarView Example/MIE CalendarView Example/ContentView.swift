@@ -123,6 +123,7 @@ enum StyleOption: String, CaseIterable, Identifiable {
 struct ContentView: View {
     @State private var selectedStyle: StyleOption = .default
     @State private var selectedDate: DateComponents?
+    @State private var visibleMonth: String = ""
 
     var body: some View {
         VStack {
@@ -135,6 +136,15 @@ struct ContentView: View {
             .padding(.horizontal)
 
             styledCalendar()
+                .onMonthChange { month, year in
+                    visibleMonth = "\(month)/\(year)"
+                }
+
+            if !visibleMonth.isEmpty {
+                Text("Viewing: \(visibleMonth)")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
 
             if let selected = selectedDate {
                 Text("Selected: \(selected.month!)/\(selected.day!)/\(selected.year!)")
@@ -162,6 +172,9 @@ struct ContentView: View {
         case .minimal:
             CalendarView(selection: $selectedDate, events: sampleEvents)
                 .dayViewStyle(MinimalDayViewStyle())
+                .onMonthChange { visibleMonth, year in
+                    print(visibleMonth, year)
+                }
         }
     }
 }
