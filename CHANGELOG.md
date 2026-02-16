@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026.02.15
+
 ### Added
 - `CalendarView` — horizontally paging calendar centered on the current month
 - Configurable `monthCount` parameter to control how many months are available (default `12`)
