@@ -31,7 +31,7 @@ import MIECalendarView
 CalendarView()
 ```
 
-This displays a 12-month horizontally paging calendar centered on the current month. Today is highlighted by default.
+This displays a calendar starting at the current month with 11 months ahead (12 total). Today is highlighted by default.
 
 ### Day Selection
 
@@ -43,12 +43,16 @@ Pass a binding to track the selected day:
 CalendarView(selection: $selectedDate)
 ```
 
-### Month Count
+### Month Range
 
-Control how many months are available to scroll through:
+Control how many months before and after the current month are available:
 
 ```swift
-CalendarView(monthCount: 6, selection: $selectedDate)
+// 3 months back, 6 months forward (10 months total including current)
+CalendarView(monthsBefore: 3, monthsAfter: 6, selection: $selectedDate)
+
+// Current month only
+CalendarView(monthsBefore: 0, monthsAfter: 0)
 ```
 
 ### Events
@@ -149,14 +153,16 @@ CalendarView(selection: $selectedDate, events: events)
 ```swift
 // Static events
 CalendarView(
-    monthCount: Int = 12,
+    monthsBefore: Int = 0,
+    monthsAfter: Int = 11,
     selection: Binding<DateComponents?> = .constant(nil),
     events: [any DayEventType] = []
 )
 
 // Binding events
 CalendarView(
-    monthCount: Int = 12,
+    monthsBefore: Int = 0,
+    monthsAfter: Int = 11,
     selection: Binding<DateComponents?> = .constant(nil),
     events: Binding<[any DayEventType]>
 )

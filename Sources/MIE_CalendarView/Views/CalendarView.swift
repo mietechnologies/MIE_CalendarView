@@ -4,6 +4,7 @@ import SwiftUI
 public struct CalendarView: View {
     private let months: [MonthDescriptor]
     private let currentMonth: MonthDescriptor
+    private let monthsBefore: Int
     @Binding private var events: [any DayEventType]
     @Binding private var selection: DateComponents?
     @State private var visibleMonthID: Int?
@@ -20,39 +21,46 @@ public struct CalendarView: View {
 
     /// Creates a calendar view with a binding to an events array.
     /// - Parameters:
-    ///   - monthCount: The total number of months to display, centered on the
-    ///     current month. Defaults to `12`.
+    ///   - monthsBefore: The number of months before the current month to
+    ///     include. Defaults to `0`.
+    ///   - monthsAfter: The number of months after the current month to
+    ///     include. Defaults to `11`.
     ///   - selection: A binding to the currently selected day. Pass `nil` to
     ///     let today appear selected by default.
     ///   - events: A binding to an array of events conforming to
     ///     ``DayEventType``. The calendar displays indicators on days that
     ///     have events and updates automatically when the array changes.
     public init(
-        monthCount: Int = 12,
+        monthsBefore: Int = 0,
+        monthsAfter: Int = 11,
         selection: Binding<DateComponents?> = .constant(nil),
         events: Binding<[any DayEventType]>
     ) {
         let current = CalendarDataSource.currentMonthDescriptor()
         self.currentMonth = current
-        self.months = CalendarDataSource.monthRange(around: Date(), totalMonths: monthCount)
+        self.monthsBefore = monthsBefore
+        self.months = CalendarDataSource.monthRange(around: Date(), monthsBefore: monthsBefore, monthsAfter: monthsAfter)
         self._selection = selection
         self._events = events
     }
 
     /// Creates a calendar view with a static events array.
     /// - Parameters:
-    ///   - monthCount: The total number of months to display, centered on the
-    ///     current month. Defaults to `12`.
+    ///   - monthsBefore: The number of months before the current month to
+    ///     include. Defaults to `0`.
+    ///   - monthsAfter: The number of months after the current month to
+    ///     include. Defaults to `11`.
     ///   - selection: A binding to the currently selected day. Pass `nil` to
     ///     let today appear selected by default.
     ///   - events: An array of events conforming to ``DayEventType``. The
     ///     calendar displays indicators on days that have events.
     public init(
-        monthCount: Int = 12,
+        monthsBefore: Int = 0,
+        monthsAfter: Int = 11,
         selection: Binding<DateComponents?> = .constant(nil),
         events: [any DayEventType] = []
     ) {
-        self.init(monthCount: monthCount, selection: selection, events: .constant(events))
+        self.init(monthsBefore: monthsBefore, monthsAfter: monthsAfter, selection: selection, events: .constant(events))
     }
 
     public var body: some View {
@@ -66,7 +74,7 @@ public struct CalendarView: View {
             .scrollTargetLayout()
         }
         .scrollTargetBehavior(.paging)
-        .defaultScrollAnchor(.center)
+        .defaultScrollAnchor(monthsBefore == 0 ? .leading : .center)
         .scrollPosition(id: $visibleMonthID, anchor: .center)
         .fixedSize(horizontal: false, vertical: true)
         .onAppear {

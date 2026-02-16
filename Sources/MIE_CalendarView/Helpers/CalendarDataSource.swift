@@ -8,23 +8,6 @@ struct MonthDescriptor: Identifiable, Hashable, Sendable {
 }
 
 enum CalendarDataSource {
-    static func monthRange(around date: Date, yearsBefore: Int = 2, yearsAfter: Int = 2, calendar: Calendar = .current) -> [MonthDescriptor] {
-        let components = calendar.dateComponents([.year, .month], from: date)
-        guard let centerYear = components.year, components.month != nil else { return [] }
-
-        var months: [MonthDescriptor] = []
-        let startYear = centerYear - yearsBefore
-        let endYear = centerYear + yearsAfter
-
-        for year in startYear...endYear {
-            for month in 1...12 {
-                months.append(MonthDescriptor(year: year, month: month))
-            }
-        }
-
-        return months
-    }
-
     static func daysInMonth(year: Int, month: Int, calendar: Calendar = .current) -> Int {
         var components = DateComponents()
         components.year = year
@@ -47,14 +30,13 @@ enum CalendarDataSource {
         return weekday - 1
     }
 
-    static func monthRange(around date: Date, totalMonths: Int, calendar: Calendar = .current) -> [MonthDescriptor] {
+    static func monthRange(around date: Date, monthsBefore: Int, monthsAfter: Int, calendar: Calendar = .current) -> [MonthDescriptor] {
         let components = calendar.dateComponents([.year, .month], from: date)
         guard let centerYear = components.year, let centerMonth = components.month else { return [] }
 
-        let monthsBefore = (totalMonths - 1) / 2
         var months: [MonthDescriptor] = []
 
-        for offset in -monthsBefore ..< (-monthsBefore + totalMonths) {
+        for offset in -monthsBefore...monthsAfter {
             var m = centerMonth + offset
             var y = centerYear
             while m < 1 { m += 12; y -= 1 }

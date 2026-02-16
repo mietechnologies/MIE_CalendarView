@@ -171,7 +171,7 @@ struct ContentView: View {
     private func styledCalendar() -> some View {
         switch selectedStyle {
         case .default:
-            CalendarView(monthCount: 1, selection: $selectedDate, events: $sampleEvents)
+            CalendarView(monthsBefore: 0, monthsAfter: 0, selection: $selectedDate, events: $sampleEvents)
                 .dayViewStyle(DefaultDayViewStyle())
         case .bordered:
             CalendarView(selection: $selectedDate, events: $sampleEvents)
